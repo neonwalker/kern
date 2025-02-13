@@ -1,22 +1,19 @@
-name: Rust
+name: Build
 
 on:
   push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
-
-env:
-  CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
+    name: Build Project
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        toolchain:
+          - nightly
     steps:
       - uses: actions/checkout@v4
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
+      - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+      - run: cargo build --verbose
+      - run: cargo test --verbose
